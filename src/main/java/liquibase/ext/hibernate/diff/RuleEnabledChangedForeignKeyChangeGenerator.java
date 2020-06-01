@@ -15,9 +15,9 @@ import liquibase.structure.core.ForeignKeyConstraintType;
 
 /**
  * Hibernate doesn't know about all the variations that occur with foreign keys but just whether the FK exists or not.
- * To prevent changing customized foreign keys, all foreign key changes from hibernate are suppressed, except for on delete.
+ * To prevent changing customized foreign keys, all foreign key changes from hibernate are suppressed, except for on delete and on update.
  */
-public class OnDeleteEnabledChangedForeignKeyChangeGenerator extends ChangedForeignKeyChangeGenerator {
+public class RuleEnabledChangedForeignKeyChangeGenerator extends ChangedForeignKeyChangeGenerator {
 
     @Override
     public Change[] fixChanged(DatabaseObject changedObject, ObjectDifferences differences, DiffOutputControl control,
