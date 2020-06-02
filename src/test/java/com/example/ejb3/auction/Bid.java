@@ -2,6 +2,8 @@ package com.example.ejb3.auction;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.Date;
 
@@ -24,6 +26,7 @@ public class Bid extends Persistent {
     private User bidder;
 
     @ManyToOne
+    @Cascade({CascadeType.SAVE_UPDATE})
     public AuctionItem getItem() {
         return item;
     }

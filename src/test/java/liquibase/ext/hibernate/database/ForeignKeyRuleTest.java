@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class ForeignKeyRuleTest {
     DatabaseSnapshot snapshot;
@@ -54,8 +55,18 @@ public class ForeignKeyRuleTest {
         List<ForeignKey> foreignKeys = auctionItemTable.getOutgoingForeignKeys().stream().distinct().collect(Collectors.toList());
         // not sure why but contains duplicates for foreign keys
         for (ForeignKey foreignKey : foreignKeys) {
-            ForeignKeyConstraintType deleteRule = foreignKey.getDeleteRule();
             assertEquals(null, foreignKey.getDeleteRule());
+        }
+    }
+
+
+    @Test
+    public void testForeignKeyOnUpdateSave() {
+        Table bidTable = (Table) snapshot.get(new Table().setName("bid").setSchema(new Schema()));
+        List<ForeignKey> foreignKeys = bidTable.getOutgoingForeignKeys().stream().distinct().collect(Collectors.toList());
+        // not sure why but contains duplicates for foreign keys
+        for (ForeignKey foreignKey : foreignKeys) {
+            assertNotNull(foreignKey.getUpdateRule());
         }
     }
 }

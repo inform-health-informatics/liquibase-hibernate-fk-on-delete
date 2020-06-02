@@ -30,8 +30,8 @@ public class RuleEnabledChangedForeignKeyChangeGenerator extends ChangedForeignK
             // if there are changes, first would need to be create fk, second could be delete or update rule
             if (changes != null && changes.length == 2) {
                 AddForeignKeyConstraintChange addFkChange = (AddForeignKeyConstraintChange) changes[1];
-                updateForeinKeyRule("deleteRule", differences, addFkChange);
-                updateForeinKeyRule("updateRule", differences, addFkChange);
+                updateForeignKeyRule("deleteRule", differences, addFkChange);
+                updateForeignKeyRule("updateRule", differences, addFkChange);
             }
 
             if (!differences.hasDifferences()) {
@@ -45,11 +45,11 @@ public class RuleEnabledChangedForeignKeyChangeGenerator extends ChangedForeignK
 
     /**
      * Update the foreign key rule for deleteRule or updateRule.
-     * @param rule deleteRule or updateRule
+     * @param rule        deleteRule or updateRule
      * @param differences object differences
      * @param addFkChange foreign key constraint change
      */
-    private void updateForeinKeyRule(String rule, ObjectDifferences differences, AddForeignKeyConstraintChange addFkChange) {
+    private void updateForeignKeyRule(String rule, ObjectDifferences differences, AddForeignKeyConstraintChange addFkChange) {
         if (differences.isDifferent(rule)) {
             Difference deleteRule = differences.getDifference(rule);
             // compare rules
@@ -64,7 +64,11 @@ public class RuleEnabledChangedForeignKeyChangeGenerator extends ChangedForeignK
                     differences.removeDifference(rule);
                 }
             } else {
-                addFkChange.setOnDelete(hibernateFkAction);
+                if (rule.equals("deleteRule")) {
+                    addFkChange.setOnDelete(hibernateFkAction);
+                } else if (rule.equals("updateRule")) {
+                    addFkChange.setOnUpdate(hibernateFkAction);
+                }
             }
         }
     }
