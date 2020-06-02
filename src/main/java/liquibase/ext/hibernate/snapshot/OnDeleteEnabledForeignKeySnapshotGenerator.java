@@ -62,8 +62,6 @@ public class OnDeleteEnabledForeignKeySnapshotGenerator extends ForeignKeySnapsh
                         }
 
                         // Add in cascade delete
-                        // TODO: also add in all other variants of onDelete or not worth it?
-                        // TODO: also add in on update?
                         if (hibernateForeignKey.isCascadeDeleteEnabled()) {
                             fk.setDeleteRule(ForeignKeyConstraintType.importedKeyCascade);
                         }

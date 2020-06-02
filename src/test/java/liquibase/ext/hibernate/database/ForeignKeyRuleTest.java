@@ -57,15 +57,4 @@ public class ForeignKeyRuleTest {
             assertEquals(null, foreignKey.getDeleteRule());
         }
     }
-
-
-    @Test
-    public void testForeignKeyOnUpdateSave() {
-        Table bidTable = (Table) snapshot.get(new Table().setName("bid").setSchema(new Schema()));
-        List<ForeignKey> foreignKeys = bidTable.getOutgoingForeignKeys().stream().distinct().collect(Collectors.toList());
-        // not sure why but contains duplicates for foreign keys
-        for (ForeignKey foreignKey : foreignKeys) {
-            assertNotNull(foreignKey.getUpdateRule());
-        }
-    }
 }
