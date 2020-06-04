@@ -1,7 +1,11 @@
-package com.example.ejb3.auction;
+package com.example.ejb3.fk;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -10,7 +14,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
-import java.util.Date;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -23,6 +26,7 @@ public class Bid extends Persistent {
     private User bidder;
 
     @ManyToOne
+    @Cascade({CascadeType.SAVE_UPDATE})
     public AuctionItem getItem() {
         return item;
     }

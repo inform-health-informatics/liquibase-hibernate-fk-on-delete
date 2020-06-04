@@ -24,7 +24,7 @@ public class ForeignKeyOnDeleteTest {
     @Before
     public void setup() throws Exception {
         // Using Liquibase-hibernate classes
-        String url = "hibernate:ejb3:auction";
+        String url = "hibernate:ejb3:fk";
         Database database = CommandLineUtils.createDatabaseObject(this.getClass().getClassLoader(), url, null, null, null, null, null, false, false, null, null, null, null, null, null, null);
         snapshot = SnapshotGeneratorFactory.getInstance().createSnapshot(CatalogAndSchema.DEFAULT, database, new SnapshotControl(database));
     }

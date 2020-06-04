@@ -1,10 +1,9 @@
-package com.example.ejb3.auction;
+package com.example.ejb3.fk;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
@@ -29,11 +28,13 @@ public class AuctionItem extends Persistent {
     }
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     public User getSeller() {
         return seller;
     }
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     public Bid getSuccessfulBid() {
         return successfulBid;
     }

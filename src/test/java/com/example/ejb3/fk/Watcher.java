@@ -1,11 +1,9 @@
-package com.example.ejb3.auction;
+package com.example.ejb3.fk;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.TableGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import javax.persistence.*;
 
 @Entity
 public class Watcher {
@@ -19,5 +17,6 @@ public class Watcher {
     private String name;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private AuctionItem auctionItem;
 }
