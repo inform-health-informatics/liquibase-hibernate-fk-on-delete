@@ -14,7 +14,6 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.structure.DatabaseObject;
 import liquibase.structure.core.Column;
 import liquibase.structure.core.ForeignKey;
-import liquibase.structure.core.Index;
 import liquibase.structure.core.PrimaryKey;
 import liquibase.structure.core.Sequence;
 import liquibase.structure.core.Table;
@@ -31,17 +30,21 @@ import java.util.Map;
 import java.util.Set;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.hasToString;
 
 public class ForeignKeyDiffOnDeleteTest {
     private Database database;
-    private Connection connection;
     private CompareControl compareControl;
+    private Database fkOnDeleteNoActionDatabase;
+    private Database fkOnDeleteCascadeAction;
 
 
     @Before
     public void setUp() throws Exception {
         Class.forName("org.hsqldb.jdbc.JDBCDriver");
-        connection = DriverManager.getConnection("jdbc:hsqldb:mem:TESTDB" + System.currentTimeMillis(), "SA", "");
+        Connection connection = DriverManager.getConnection("jdbc:hsqldb:mem:TESTDB" + System.currentTimeMillis(), "SA", "");
         database = new HsqlDatabase();
         database.setConnection(new JdbcConnection(connection));
 
@@ -53,14 +56,14 @@ public class ForeignKeyDiffOnDeleteTest {
         typesToInclude.add(UniqueConstraint.class);
         typesToInclude.add(Sequence.class);
         compareControl = new CompareControl(typesToInclude);
+
+        fkOnDeleteNoActionDatabase = createHibernateDatabase("com.example.ejb3.auction");
+        fkOnDeleteCascadeAction = createHibernateDatabase("com.example.ejb3.fk");
     }
 
     @After
     public void tearDown() throws Exception {
         database.close();
-        connection = null;
-        database = null;
-        compareControl = null;
     }
 
     private static Database createHibernateDatabase(String modelsReference) throws DatabaseException {
@@ -72,14 +75,30 @@ public class ForeignKeyDiffOnDeleteTest {
     }
 
     @Test
-    public void foreignKeyOnDeleteDifferenceFound() throws Exception {
-        Database originalHibernateDatabase = createHibernateDatabase("com.example.ejb3.auction");
-        Database fkHibernateDatabase = createHibernateDatabase("com.example.ejb3.fk");
-
+    public void foreignKeyOnDeleteAdded() throws Exception {
         Liquibase liquibase = new Liquibase((String) null, new ClassLoaderResourceAccessor(), database);
-        DiffResult diff = liquibase.diff(originalHibernateDatabase, fkHibernateDatabase, compareControl);
-        Map<DatabaseObject, ObjectDifferences> changes = diff.getChangedObjects();
+        DiffResult diffResult = liquibase.diff(fkOnDeleteNoActionDatabase, fkOnDeleteCascadeAction, compareControl);
+        Map<DatabaseObject, ObjectDifferences> changes = diffResult.getChangedObjects();
 
         assertTrue(changes.size() > 0);
+        ObjectDifferences differences = (ObjectDifferences) changes.values().toArray()[0];
+
+        assertThat(differences,
+                hasProperty("differences",
+                        hasToString("[deleteRule changed from 'null' to 'importedKeyCascade']")));
+    }
+
+    @Test
+    public void foreignKeyOnDeleteRemoved() throws Exception {
+        Liquibase liquibase = new Liquibase((String) null, new ClassLoaderResourceAccessor(), database);
+        DiffResult diffResult = liquibase.diff(fkOnDeleteCascadeAction, fkOnDeleteNoActionDatabase, compareControl);
+        Map<DatabaseObject, ObjectDifferences> changes = diffResult.getChangedObjects();
+
+        assertTrue(changes.size() > 0);
+        ObjectDifferences differences = (ObjectDifferences) changes.values().toArray()[0];
+
+        assertThat(differences,
+                hasProperty("differences",
+                        hasToString("[deleteRule changed from 'importedKeyCascade' to 'null']")));
     }
 }
