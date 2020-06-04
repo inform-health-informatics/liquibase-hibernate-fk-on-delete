@@ -53,13 +53,6 @@ public class ForeignKeyDiffOnDeleteTest {
         typesToInclude.add(UniqueConstraint.class);
         typesToInclude.add(Sequence.class);
         compareControl = new CompareControl(typesToInclude);
-        compareControl.addSuppressedField(Table.class, "remarks");
-        compareControl.addSuppressedField(Column.class, "remarks");
-        compareControl.addSuppressedField(Column.class, "certainDataType");
-        compareControl.addSuppressedField(Column.class, "autoIncrementInformation");
-        compareControl.addSuppressedField(ForeignKey.class, "deleteRule");
-        compareControl.addSuppressedField(ForeignKey.class, "updateRule");
-        compareControl.addSuppressedField(Index.class, "unique");
     }
 
     @After
