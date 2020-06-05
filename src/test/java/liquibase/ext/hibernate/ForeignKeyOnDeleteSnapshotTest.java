@@ -1,4 +1,4 @@
-package liquibase.ext.hibernate.snapshot;
+package liquibase.ext.hibernate;
 
 import liquibase.CatalogAndSchema;
 import liquibase.database.Database;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
-public class ForeignKeyOnDeleteTest {
+public class ForeignKeyOnDeleteSnapshotTest {
     DatabaseSnapshot snapshot;
 
     @Before

@@ -1,4 +1,4 @@
-package liquibase.ext.hibernate.diff;
+package liquibase.ext.hibernate;
 
 import liquibase.Liquibase;
 import liquibase.database.Database;
@@ -34,7 +34,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasToString;
 
-public class ForeignKeyDiffOnDeleteTest {
+public class ForeignKeyOnDeleteDiffTest {
     private Database database;
     private CompareControl compareControl;
     private Database fkOnDeleteNoActionDatabase;
