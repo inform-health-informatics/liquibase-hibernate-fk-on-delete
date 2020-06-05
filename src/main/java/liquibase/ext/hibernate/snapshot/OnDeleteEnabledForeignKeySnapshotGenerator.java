@@ -13,7 +13,6 @@ import org.hibernate.boot.spi.MetadataImplementor;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 /**
  * Original ForeignKey Snapshot Generator, enabling onDelete Cascade.
  */
@@ -21,7 +20,6 @@ public class OnDeleteEnabledForeignKeySnapshotGenerator extends ForeignKeySnapsh
 
     @Override
     protected void addTo(DatabaseObject foundObject, DatabaseSnapshot snapshot) throws DatabaseException, InvalidExampleException {
-        // original implementation
         if (!snapshot.getSnapshotControl().shouldInclude(ForeignKey.class)) {
             return;
         }
@@ -61,10 +59,8 @@ public class OnDeleteEnabledForeignKeySnapshotGenerator extends ForeignKeySnapsh
                             }
                         }
 
-                        // Add in cascade delete
-                        if (hibernateForeignKey.isCascadeDeleteEnabled()) {
-                            fk.setDeleteRule(ForeignKeyConstraintType.importedKeyCascade);
-                        }
+                        // Only part altered from original implementation
+                        addOnDeleteCascadeIfEnabled(hibernateForeignKey, fk);
 
                         fk.setDeferrable(false);
                         fk.setInitiallyDeferred(false);
@@ -77,6 +73,17 @@ public class OnDeleteEnabledForeignKeySnapshotGenerator extends ForeignKeySnapsh
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Add on delete cascade rule to foreign key if appropriate.
+     * @param hibernateForeignKey hibernate table foreign key
+     * @param fk                  foreign key to be altered
+     */
+    private void addOnDeleteCascadeIfEnabled(final org.hibernate.mapping.ForeignKey hibernateForeignKey, ForeignKey fk) {
+        if (hibernateForeignKey.isCascadeDeleteEnabled()) {
+            fk.setDeleteRule(ForeignKeyConstraintType.importedKeyCascade);
         }
     }
 
