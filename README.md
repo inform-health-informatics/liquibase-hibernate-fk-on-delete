@@ -6,8 +6,9 @@ After installing the project using maven, it can be used as liquibase-hibernate 
 be added to the changelogs.
 
 Currently hibernate only has no action or cascade as OnDeleteActions. 
-Only adding an `@OnDelete(action = OnDeleteAction.CASCADE)` annotation will result in a change to the foreign key 
-in the changelog. 
+Because of this, only when adding a new foreign key with an `@OnDelete(action = OnDeleteAction.CASCADE)` 
+annotation will result in a change to the foreign key in the changelog. Existing foreign keys will never have their
+on delete rule altered, and changes to these should be created manually in the changelog.
 
 ## Installation
 
